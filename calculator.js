@@ -145,19 +145,21 @@ function addNumToDisplay (e){
 
 //÷ ×
 function addOpToDisplay (e){
-    if(bottomLine.textContent.length <= 13) {
-        let lastCharacter = bottomLine.textContent[bottomLine.textContent.length-1];
-        if (pressedEqsLast === true){
+    let lastCharacter = bottomLine.textContent[bottomLine.textContent.length-1];
+    if (pressedEqsLast === true){
+        if (bottomLine.textContent.length + topLine.textContent.length > 13)
+            topLine.textContent = ans;
+        else {
             topLine.textContent += ans;
-            bottomLine.textContent = 'Ans' + e.target.textContent;
         }
-        else if (e.target.textContent!=='-' && (lastCharacter==='×'||lastCharacter==='÷'||lastCharacter==='+'|| lastCharacter==='-')){
-            //not allow user to enter 2 operators in a row unless the second one is -
-        }
-        else 
-            bottomLine.textContent += e.target.textContent;
-        pressedEqsLast = false;
+        bottomLine.textContent = 'Ans' + e.target.textContent;
     }
+    else if (e.target.textContent!=='-' && (lastCharacter==='×'||lastCharacter==='÷'||lastCharacter==='+'|| lastCharacter==='-')){
+        //not allow user to enter 2 operators in a row unless the second one is -
+    }
+    else if (bottomLine.textContent.length <= 13)
+        bottomLine.textContent += e.target.textContent;
+    pressedEqsLast = false;
 }
 
 function addAnsToDisplay (e){

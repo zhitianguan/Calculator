@@ -1,10 +1,10 @@
 body {
-    font-family: "Montserrat", sans-serif; 
+    font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif; 
     background-color: #54D17A;
 }
 
 h1{
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
     text-align: center;
 }
@@ -20,8 +20,8 @@ h1{
     background-color: rgba(255,255,255,1);
     box-shadow: 0 0 10px rgb(0,0,0,0.5);
     border-radius: 0.5em;
-    width: 550px;
-    height: 650px;
+    width: 360px;
+    height: 430px;
 }
 
 #buttonsContainer{
@@ -42,12 +42,12 @@ h1{
 }
 
 #topLine {
-    font-size: 42px;
+    font-size: 28px;
     line-height: 100%;
     margin-right: 10px;
 }
 #bottomLine {
-    font-size: 50px;
+    font-size: 33px;
     line-height: 100%;
     margin-right: 10px;
 }
@@ -57,7 +57,7 @@ button {
     background-color: #EFEFEF;
     border: none;
     border-radius: 0.1em;
-    font-size: 45px;
+    font-size: 35px;
     font-weight: bold;
 }
 
@@ -70,12 +70,12 @@ button:hover,:focus  {
 
 .operator {
     background-color: #FFA000;
-    font-size: 60px;
+    font-size: 40px;
 }
 
 #equals {
     background-color: #3688C3;
-    font-size: 60px;   
+    font-size: 40px;   
     color: white;
 }
 
