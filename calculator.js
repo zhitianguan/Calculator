@@ -18,6 +18,10 @@ function isAnOperator (char){
     return (char==='+' || char==='-' || char==='÷' || char==='×' || char==='(' || char===')')
 }
 
+function isValidNum (num) {
+    return !(isNaN(num) || num === Infinity || num ===-Infinity)
+}
+
 function splitDisplayInput (str){
     let operands = []
     let operators =[]
@@ -135,10 +139,21 @@ function evalExpression (input){
 }
 
 function calculator () {
-    topLine.textContent = bottomLine.textContent + ' = ';
+    if (gotError)
+        return
+
+    let str = bottomLine.textContent
+
+    //replace unnecessary operators at the end of input
+    if (isAnOperator(str[str.length-1]) && str[str.length-1]!=')'){
+        str = str.slice(0,str.length-1)
+        if (isAnOperator(str[str.length-1]) && str[str.length-1]!=')')
+            str = str.slice(0,str.length-1)
+    }
+    topLine.textContent = str + ' = ';
 
     //replace all ans with their values first
-    let str = bottomLine.textContent.split('Ans').join(ans)
+    str = str.split('Ans').join(ans)
 
     //replace multiple + - opertors 
     str = str.split('--').join('+')
@@ -148,16 +163,21 @@ function calculator () {
 
     let input = splitDisplayInput(str);
     let output = evalExpression(input)
-    if (isNaN(output)){
-        bottomLine.textContent = 'Synatx Error'
+    if (!isValidNum(output)){
+        bottomLine.textContent = 'Error'
+        topLine.textContent = ''
+        gotError = true;
     } else {
         ans = output
         bottomLine.textContent = ans
+        gotError = false;
     }
     pressedEqsLast = true;
 }
 
 function addNumToDisplay (e){
+    if (gotError)
+        return
     if(bottomLine.textContent.length <= 13) {
         if (pressedEqsLast === true){
             topLine.textContent += bottomLine.textContent;
@@ -174,6 +194,8 @@ function addNumToDisplay (e){
 
 //÷ ×
 function addOpToDisplay (e){
+    if (gotError)
+        return
     let prevChar = bottomLine.textContent[bottomLine.textContent.length-1];
     let prevPrevChar = bottomLine.textContent.length >=2?bottomLine.textContent[bottomLine.textContent.length-2]:null
     if (pressedEqsLast === true){
@@ -196,7 +218,10 @@ function addOpToDisplay (e){
 }
 
 function addAnsToDisplay (e){
+    if (gotError)
+        return
     if(bottomLine.textContent.length <= 13) {
+        let prevChar = bottomLine.textContent[bottomLine.textContent.length-1];
         if (ans===undefined){
             alert ("No value has been stored in Ans yet.")
             return;
@@ -205,7 +230,10 @@ function addAnsToDisplay (e){
             topLine.textContent += bottomLine.textContent;
             bottomLine.textContent = 'Ans';
         }
-        else {
+        else if (bottomLine.textContent==='0'){
+            bottomLine.textContent = 'Ans';
+        }
+        else if (prevChar==='+' || prevChar==='-' || prevChar==='÷' || prevChar==='×'){
             bottomLine.textContent += 'Ans';
         }
         pressedEqsLast = false;
@@ -213,6 +241,8 @@ function addAnsToDisplay (e){
 }
 
 function addBrktToDisplay (e){
+    if (gotError)
+        return
     if(bottomLine.textContent.length <= 13) {
         if (pressedEqsLast === true){
             topLine.textContent += bottomLine.textContent;
@@ -234,6 +264,7 @@ function resetDisplay (){
     topLine.textContent = ''
     bottomLine.textContent = '0'
     pressedEqsLast = false
+    gotError = false;
 }
 
 
@@ -246,6 +277,7 @@ const resetKey = document.querySelector('#reset')
 const ansKey = document.querySelector('#ans')
 
 let pressedEqsLast = false;
+let gotError = false;
 let ans
 
 //display
