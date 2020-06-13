@@ -147,8 +147,13 @@ function calculator () {
     str = str.split('+-').join('-')
 
     let input = splitDisplayInput(str);
-    ans = evalExpression(input)
-    bottomLine.textContent = ans;
+    let output = evalExpression(input)
+    if (isNaN(output)){
+        bottomLine.textContent = 'Synatx Error'
+    } else {
+        ans = output
+        bottomLine.textContent = ans
+    }
     pressedEqsLast = true;
 }
 
