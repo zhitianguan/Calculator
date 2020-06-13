@@ -26,9 +26,18 @@ function splitDisplayInput (str){
     //break up the text on display into operands & operators
     for (let i=0; i<str.length; i++){
         if (isAnOperator(str[i])){
-            if (str[i]==='(' || (i!== 0 && isAnOperator(str[i-1]))){
+            if (str[i]==='('){
                 operators.push(str[i]);
                 startIndex=i+1;
+            }
+            else if (i!== 0 && isAnOperator(str[i-1])){
+                if (str[i]==='-'){
+                    startIndex=i
+                }
+                else {
+                    operators.push(str[i]);
+                    startIndex=i+1;
+                }
             }
             else {
                 operands.push(str[startIndex]==='A'?ans:Number(str.substring(startIndex,i)));
@@ -37,8 +46,13 @@ function splitDisplayInput (str){
             }
         }
     }
-    if (str[str.length-1] !== ')')
-        operands.push(Number(str.substring(startIndex)));
+    //add the last operand if it was missed in the previous for loop
+    if (str[str.length-1] !== ')'){
+        if (str[str.length-1] === 's')
+            operands.push(ans);
+        else
+            operands.push(Number(str.substring(startIndex)));
+    }
 
     let result = {operands,operators}
     return result;
@@ -122,7 +136,17 @@ function evalExpression (input){
 
 function calculator () {
     topLine.textContent = bottomLine.textContent + ' = ';
-    let input = splitDisplayInput(bottomLine.textContent);
+
+    //replace all ans with their values first
+    let str = bottomLine.textContent.split('Ans').join(ans)
+
+    //replace multiple + - opertors 
+    str = str.split('--').join('+')
+    str = str.split('++').join('+')
+    str = str.split('-+').join('-')
+    str = str.split('+-').join('-')
+
+    let input = splitDisplayInput(str);
     ans = evalExpression(input)
     bottomLine.textContent = ans;
     pressedEqsLast = true;
@@ -145,7 +169,8 @@ function addNumToDisplay (e){
 
 //÷ ×
 function addOpToDisplay (e){
-    let lastCharacter = bottomLine.textContent[bottomLine.textContent.length-1];
+    let prevChar = bottomLine.textContent[bottomLine.textContent.length-1];
+    let prevPrevChar = bottomLine.textContent.length >=2?bottomLine.textContent[bottomLine.textContent.length-2]:null
     if (pressedEqsLast === true){
         if (bottomLine.textContent.length + topLine.textContent.length > 13)
             topLine.textContent = ans;
@@ -154,8 +179,11 @@ function addOpToDisplay (e){
         }
         bottomLine.textContent = 'Ans' + e.target.textContent;
     }
-    else if (e.target.textContent!=='-' && (lastCharacter==='×'||lastCharacter==='÷'||lastCharacter==='+'|| lastCharacter==='-')){
-        //not allow user to enter 2 operators in a row unless the second one is -
+    else if (isAnOperator(prevChar) && isAnOperator(prevPrevChar)){
+        //not allow user to enter three operators in a row
+    }
+    else if (e.target.textContent!=='-' && isAnOperator(prevChar)){
+        //not allow user to enter 2 operators in a row unless the second one is -)
     }
     else if (bottomLine.textContent.length <= 13)
         bottomLine.textContent += e.target.textContent;
@@ -164,8 +192,9 @@ function addOpToDisplay (e){
 
 function addAnsToDisplay (e){
     if(bottomLine.textContent.length <= 13) {
-        if (!ans){
-            return
+        if (ans===undefined){
+            alert ("No value has been stored in Ans yet.")
+            return;
         }
         else if (pressedEqsLast === true){
             topLine.textContent += bottomLine.textContent;
